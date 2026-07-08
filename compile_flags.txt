@@ -1,0 +1,4 @@
+-I/usr/local/Cellar/root/6.36.04/include/root
+-std=c++14
+-stdlib=libc++
+-pthread
