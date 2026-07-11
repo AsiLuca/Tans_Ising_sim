@@ -10,8 +10,9 @@ Il codice è suddiviso in moduli:
 2. **`Lattice2D.hpp`**: Gestisce il reticolo degli spin, l'implementazione delle *Condizioni al Contorno Periodiche (PBC)* e i metodi per calcolare l'energia locale ($\Delta E$) ed estensiva, nonché la magnetizzazione.
 3. **`Metropolis.hpp`**: Implementa l'algoritmo. Contiene la logica di **pre-calcolo dei 5 possibili valori del fattore di Boltzmann** ($e^{-\Delta E / T}$), che evita di dover calcolare esponenziali costosi durante i loop di sweep riducendo i tempi di esecuzione. Un singolo step corrisponde sempre a $L^2$ tentativi casuali di flip.
 4. **`IsingSim.hpp`**: La classe che coordina le simulazioni. Esegue i passi di termalizzazione e poi accumula le osservabili. Usa il Teorema di Fluttuazione-Dissipazione per ricavare il *Calore Specifico* $C_v$ e la *Suscettività* $\chi$ calcolando le varianze corrette scalate su $N=L^2$.
-5. **`main.cpp`**: Imposta i parametri di sweep, esplora le temperature (con step più fitti vicino a $T_c \approx 2.269$), estrae i valori e sfrutta `TGraph` di CERN ROOT per disporli in una griglia visiva (2x2). Genera i plot finali in "batch mode" (senza GUI).
-6. **`Makefile`**: Permette di compilare rapidamente il codice tramite il comando `make`.
+5. **`Analyzer.hpp`**: Classe per l'analisi dei risultati provenienti da simulazioni su reticoli multipli. Estrae in automatico la temperatura critica fittizia $T_c(L)$ localizzando il picco massimo della suscettività magnetica ed effettua un fit (grafico e lineare) di *Finite Size Scaling* per stimare la vera $T_c$ del sistema nel limite termodinamico ($L \to \infty$).
+6. **`main.cpp`**: Imposta i parametri di sweep, esegue ciclicamente le simulazioni su diverse dimensioni di reticolo (es. L=16,32,64...), esplora le temperature ed estrae i valori. Genera le griglie visive per ogni taglia ed usa l'`Analyzer` per il calcolo finale della $T_c$.
+7. **`Makefile`**: Permette di compilare rapidamente il codice tramite il comando `make`.
 
 ## Come compilare ed eseguire
 
@@ -36,12 +37,12 @@ Per avviare la simulazione, digita:
 ```
 
 ### 3. Output
-Al termine dell'esecuzione, il terminale mostrerà i dati calcolati passo-passo per ogni temperatura.
-Inoltre, verranno generati due file immagine nella stessa cartella:
-- `Ising_Simulation_Results.pdf`
-- `Ising_Simulation_Results.png`
+Al termine dell'esecuzione, il terminale mostrerà i dati calcolati passo-passo per ogni temperatura e la stima estrapolata finale di $T_c(\infty)$.
+Inoltre, verranno generati diversi file immagine `.pdf` e `.png` nella sottocartella `plots`:
+- `Ising_L*.pdf` e `.png`: per ognuna delle grandezze simulate del reticolo.
+- `FiniteSizeScaling.pdf` e `.png`: i grafici del fit di estrapolazione della $T_c$.
 
-Questi conterranno i 4 grafici richiesti per:
+Ogni file `Ising_L*.pdf` conterra' i 4 grafici per quella precisa simulazione:
 - Magnetizzazione media assoluta per spin $\langle |M| \rangle$
 - Energia media per spin $\langle E \rangle$
 - Calore Specifico per spin $C_v$
