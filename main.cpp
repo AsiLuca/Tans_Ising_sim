@@ -1,7 +1,9 @@
+#include "IsingSim.hpp"
+#include "analyzer.hpp"
+#include <cstdlib>
 #include <iomanip>
 #include <iostream>
 #include <vector>
-#include <cstdlib>
 
 #include "IsingSim.hpp"
 #include "analyzer.hpp"
