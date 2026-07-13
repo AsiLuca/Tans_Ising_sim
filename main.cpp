@@ -1,5 +1,4 @@
 #include "IsingSim.hpp"
-#include "analyzer.hpp"
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
@@ -44,12 +43,6 @@ int main(int argc, char **argv) {
     auto start = std::chrono::high_resolution_clock::now();
     IsingSim sim(L, therm_sweeps, meas_sweeps, 1971); // seed = 42
 
-    // Array per memorizzare i dati calcolati e poi passarli a ROOT
-    vector<double> T_vals;
-    vector<double> M_vals;
-    vector<double> E_vals;
-    vector<double> Cv_vals;
-    vector<double> Chi_vals;
     // Array per memorizzare i dati calcolati e poi passarli a ROOT
     vector<double> T_vals;
     vector<double> M_vals;
