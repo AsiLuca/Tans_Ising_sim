@@ -156,28 +156,13 @@ int main(int argc, char **argv) {
     gr_Chi->Draw("APL");
 
     // Salviamo in formato PDF e PNG
-    std::string pdf = "plots/Ising_L" + std::to_string(L) + ".pdf";
     std::string png = "plots/Ising_L" + std::to_string(L) + ".png";
 
-    c1->SaveAs(pdf.c_str());
+    
     c1->SaveAs(png.c_str());
 
     cout << "\nSimulazione per L=" << L << " completata." << endl;
     cout << "I grafici sono stati salvati nella cartella 'plots'." << endl;
-    // Salviamo in formato PDF e PNG
-    std::string pdf =
-    "Ising_L"+std::to_string(L)+".pdf";
-
-    std::string png =
-    "Ising_L"+std::to_string(L)+".png";
-
-    c1->SaveAs(pdf.c_str());
-    c1->SaveAs(png.c_str());
-
-    cout << "\nSimulazione completata." << endl;
-    cout << "I grafici sono stati salvati come 'Ising_Simulation_Results.pdf' e "
-          "'Ising_Simulation_Results.png'."
-         << endl;
 
   // Pulizia memoria ROOT
   delete gr_M;
