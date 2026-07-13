@@ -4,9 +4,10 @@
 #include <iomanip>
 #include <iostream>
 #include <vector>
+#include <chrono>
 
 #include "IsingSim.hpp"
-#include "analyzer.hpp"
+#include "Analyzer.hpp"
 
 // librerie ROOT
 #include <TAxis.h>
@@ -28,20 +29,27 @@ int main(int argc, char **argv) {
   Analyzer analyzer;
 
   // Parametri della simulazione
-  std::vector<int> lattice_sizes = {16, 32, 64,
-                                    128}; // Dimensioni del reticolo (L x L)
-  int therm_sweeps = 5000;                // Passi per termalizzare il sistema
-  int meas_sweeps = 30000;                // Passi per misurare le osservabili
+  std::vector<int> lattice_sizes = {8,16,24,32,48,64,96,128};              // Dimensioni del reticolo (L x L)
+  int therm_sweeps = 20000; // Passi per termalizzare il sistema
+  int meas_sweeps = 30000; // Passi per misurare le osservabili
 
   cout << "--- Inizio Simulazione Modello di Ising 2D (Metropolis) ---" << endl;
+  
 
   // Crea l'oggetto per gestire la simulazione
-  for (int L : lattice_sizes) {
+  for(int L : lattice_sizes){
     cout << "Reticolo L: " << L << "x" << L << " spin" << endl;
     cout << "Termalizzazione: " << therm_sweeps << " passi" << endl;
     cout << "Misurazione: " << meas_sweeps << " passi" << endl;
-    IsingSim sim(L, therm_sweeps, meas_sweeps, 42); // seed = 42
+    auto start = std::chrono::high_resolution_clock::now();
+    IsingSim sim(L, therm_sweeps, meas_sweeps, 1971); // seed = 42
 
+    // Array per memorizzare i dati calcolati e poi passarli a ROOT
+    vector<double> T_vals;
+    vector<double> M_vals;
+    vector<double> E_vals;
+    vector<double> Cv_vals;
+    vector<double> Chi_vals;
     // Array per memorizzare i dati calcolati e poi passarli a ROOT
     vector<double> T_vals;
     vector<double> M_vals;
@@ -84,6 +92,18 @@ int main(int argc, char **argv) {
     }
 
     analyzer.addSimulation(L, T_vals, Chi_vals);
+    auto stop = std::chrono::high_resolution_clock::now();
+
+    double runtime =
+        std::chrono::duration<double>(stop - start).count();
+
+    analyzer.addRuntime(L, runtime);
+    cout << "\nRuntime simulazione: "
+     << runtime
+     << " s\n"
+     << endl;
+
+
 
     // ------- INIZIO PLOTTING CON ROOT -------
 
@@ -99,7 +119,7 @@ int main(int argc, char **argv) {
     // 1. Magnetizzazione
     TGraph *gr_M = new TGraph(T_vals.size(), &T_vals[0], &M_vals[0]);
     gr_M->SetTitle(
-        "Magnetizzazione Media assoluta per spin; Temperatura T; <|M|>");
+      "Magnetizzazione Media assoluta per spin; Temperatura T; <|M|>");
     gr_M->SetMarkerStyle(20);
     gr_M->SetMarkerSize(0.6);
     gr_M->SetMarkerColor(kBlue);
@@ -151,16 +171,32 @@ int main(int argc, char **argv) {
 
     cout << "\nSimulazione per L=" << L << " completata." << endl;
     cout << "I grafici sono stati salvati nella cartella 'plots'." << endl;
+    // Salviamo in formato PDF e PNG
+    std::string pdf =
+    "Ising_L"+std::to_string(L)+".pdf";
 
-    // Pulizia memoria ROOT
-    delete gr_M;
-    delete gr_E;
-    delete gr_Cv;
-    delete gr_Chi;
-    delete c1;
+    std::string png =
+    "Ising_L"+std::to_string(L)+".png";
+
+    c1->SaveAs(pdf.c_str());
+    c1->SaveAs(png.c_str());
+
+    cout << "\nSimulazione completata." << endl;
+    cout << "I grafici sono stati salvati come 'Ising_Simulation_Results.pdf' e "
+          "'Ising_Simulation_Results.png'."
+         << endl;
+
+  // Pulizia memoria ROOT
+  delete gr_M;
+  delete gr_E;
+  delete gr_Cv;
+  delete gr_Chi;
+  delete c1;
+
   }
 
   analyzer.finiteSizeScaling();
+  analyzer.runtimeScaling();  
 
   return 0;
 }
