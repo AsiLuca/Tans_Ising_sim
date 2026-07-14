@@ -23,10 +23,7 @@ public:
     Analyzer() = default;
 
     // Estrae automaticamente Tc dal massimo della suscettività
-    void addSimulation(int L,
-                       const std::vector<double>& T,
-                       const std::vector<double>& Chi)
-    {
+    void addSimulation(int L, const std::vector<double>& T,const std::vector<double>& Chi){
         if(T.empty() || Chi.empty()) return;
 
         size_t index_max = 0;
@@ -41,9 +38,7 @@ public:
         L_values.push_back(L);
         Tc_values.push_back(T[index_max]);
 
-        std::cout << "L = " << L
-                  << "   Tc = " << T[index_max]
-                  << std::endl;
+        std::cout << "L = " << L << "   Tc = " << T[index_max] << std::endl;
     }
 
     void finiteSizeScaling()
@@ -65,18 +60,9 @@ public:
         for(int i=0;i<N;i++)
             invL[i]=1.0/L_values[i];
 
-        TCanvas *c =
-            new TCanvas("Scaling",
-                        "Finite Size Scaling",
-                        800,
-                        600);
+        TCanvas *c = new TCanvas("Scaling", "Finite Size Scaling", 800, 600);
 
-        TGraphErrors *gr =
-            new TGraphErrors(N,
-                             invL.data(),
-                             Tc_values.data(),
-                             errX.data(),
-                             errY.data());
+        TGraphErrors *gr = new TGraphErrors(N, invL.data(), Tc_values.data(), errX.data(), errY.data());
 
         gr->SetTitle("Finite Size Scaling");
         gr->GetXaxis()->SetTitle("1/L");
@@ -85,11 +71,7 @@ public:
         gr->SetMarkerStyle(20);
         gr->SetMarkerSize(1.2);
 
-        TF1 *fit =
-            new TF1("fit",
-                    "[0]+[1]*x",
-                    0,
-                    invL.front());
+        TF1 *fit = new TF1("fit", "[0]+[1]*x", 0, invL.front());
 
         fit->SetParameters(2.27,1.0);
 
@@ -99,12 +81,9 @@ public:
 
         gStyle->SetOptFit(0);
 
-        c->SaveAs("FiniteSizeScaling.pdf");
         c->SaveAs("FiniteSizeScaling.png");
 
-        std::cout << "\nTc(infinito) = "
-                  << fit->GetParameter(0)
-                  << std::endl;
+        std::cout << "\nTc(infinito) = " << fit->GetParameter(0) << std::endl;
 
         delete fit;
         delete gr;
@@ -129,18 +108,9 @@ public:
     std::vector<double> errX(N,0.0);
     std::vector<double> errY(N,0.0);
 
-    TCanvas *c =
-        new TCanvas("Runtime",
-                    "Runtime Scaling",
-                    800,
-                    600);
+    TCanvas *c = new TCanvas("Runtime", "Runtime Scaling", 800, 600);
 
-    TGraphErrors *gr =
-        new TGraphErrors(N,
-                         L_values.data(),
-                         runtime_values.data(),
-                         errX.data(),
-                         errY.data());
+    TGraphErrors *gr = new TGraphErrors(N, L_values.data(), runtime_values.data(), errX.data(), errY.data());
 
     gr->SetTitle("Tempo di esecuzione");
     gr->GetXaxis()->SetTitle("L");
@@ -152,11 +122,7 @@ public:
     gr->SetLineColor(kBlue+1);
 
     // Fit con una legge di potenza
-    TF1 *fit =
-        new TF1("runtime_fit",
-                "[0]*pow(x,[1])",
-                L_values.front(),
-                L_values.back());
+    TF1 *fit = new TF1("runtime_fit", "[0]*pow(x,[1])", L_values.front(), L_values.back());
 
     fit->SetParameters(1e-4,2.0);
 
@@ -166,18 +132,13 @@ public:
 
     gStyle->SetOptFit(0);
 
-    c->SaveAs("RuntimeScaling.pdf");
     c->SaveAs("RuntimeScaling.png");
 
     std::cout << "\nAnalisi del runtime:" << std::endl;
     std::cout << "t(L) = a * L^alpha" << std::endl;
-    std::cout << "a = "
-              << fit->GetParameter(0)
-              << std::endl;
+    std::cout << "a = " << fit->GetParameter(0) << std::endl;
 
-    std::cout << "alpha = "
-              << fit->GetParameter(1)
-              << std::endl;
+    std::cout << "alpha = " << fit->GetParameter(1) << std::endl;
 
     delete fit;
     delete gr;
