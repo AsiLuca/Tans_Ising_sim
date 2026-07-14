@@ -1,5 +1,3 @@
-Questo readme è scritto in linguaggio markdown. Si consiglia la lettura su piattaforme ad hoc per una migliore formattazione (e.g. https://markdownlivepreview.com/).
-
 # Modello di Ising 2D con CERN ROOT
 
 Questa cartella contiene un'implementazione del Modello di Ising 2D su un reticolo quadrato, simulato tramite l'algoritmo Monte Carlo con algoritmo di Metropolis. Il programma utilizza il framework ROOT per calcolare e generare i grafici delle principali osservabili termodinamiche in funzione della temperatura.
