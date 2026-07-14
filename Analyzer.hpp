@@ -70,20 +70,20 @@ public:
 
         gr->SetMarkerStyle(20);
         gr->SetMarkerSize(1.2);
+        gr->SetMarkerColor(kBlue+1);
+        gr->SetLineColor(kBlue+1);
 
         TF1 *fit = new TF1("fit", "[0]+[1]*x", 0, invL.front());
 
         fit->SetParameters(2.27,1.0);
 
         gr->Draw("AP");
-
         gr->Fit(fit,"R");
-
         gStyle->SetOptFit(0);
 
         c->SaveAs("FiniteSizeScaling.png");
 
-        std::cout << "\nTc(infinito) = " << fit->GetParameter(0) << std::endl;
+        std::cout << "\nTc(infinito) = " << fit->GetParameter(0) << " ± " << fit->GetParError(0) << std::endl;
 
         delete fit;
         delete gr;
@@ -127,18 +127,16 @@ public:
     fit->SetParameters(1e-4,2.0);
 
     gr->Draw("AP");
-
     gr->Fit(fit,"R");
-
     gStyle->SetOptFit(0);
 
     c->SaveAs("RuntimeScaling.png");
 
     std::cout << "\nAnalisi del runtime:" << std::endl;
     std::cout << "t(L) = a * L^alpha" << std::endl;
-    std::cout << "a = " << fit->GetParameter(0) << std::endl;
+    std::cout << "a = " << fit->GetParameter(0) << " ± " << fit->GetParError(0) << std::endl;
 
-    std::cout << "alpha = " << fit->GetParameter(1) << std::endl;
+    std::cout << "alpha = " << fit->GetParameter(1) << " ± " << fit->GetParError(1) << std::endl;
 
     delete fit;
     delete gr;

@@ -23,14 +23,20 @@ int main(int argc, char **argv) {
   int therm_sweeps = 20000; // Passi per termalizzare il sistema
   int meas_sweeps = 30000; // Passi per misurare le osservabili
 
+  cout << "***********************************************************" << endl;
   cout << "--- Inizio Simulazione Modello di Ising 2D (Metropolis) ---" << endl;
+  cout << "***********************************************************" << endl;
+  cout << endl;
   
 
   // Crea l'oggetto per gestire la simulazione
   for(int L : lattice_sizes){
+    cout << endl;
+    cout << "-----------------------------------------------------------" << endl;
     cout << "Reticolo L: " << L << "x" << L << " spin" << endl;
     cout << "Termalizzazione: " << therm_sweeps << " passi" << endl;
     cout << "Misurazione: " << meas_sweeps << " passi" << endl;
+    cout << "-----------------------------------------------------------" << endl;
     auto start = std::chrono::high_resolution_clock::now();
     IsingSim sim(L, therm_sweeps, meas_sweeps, 1971); // seed = 42
 
@@ -82,10 +88,9 @@ int main(int argc, char **argv) {
         std::chrono::duration<double>(stop - start).count();
 
     analyzer.addRuntime(L, runtime);
-    cout << "\nRuntime simulazione: "
-     << runtime
-     << " s\n"
-     << endl;
+    cout << "\nRuntime simulazione: " << runtime << " s\n" << endl;
+    cout << "-----------------------------------------------------------" << endl;
+    cout << endl;
 
      plotter.plotAndSave(L, T_vals, E_vals, M_vals, Cv_vals, Chi_vals);
   }
