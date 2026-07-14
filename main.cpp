@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
   IsingPlotter plotter;
 
   // Parametri della simulazione
-  std::vector<int> lattice_sizes = {8,16,24,32,48,64,96,128};              // Dimensioni del reticolo (L x L)
+  vector<int> lattice_sizes = {8,16,24,32,48,64,96,128};              // Dimensioni del reticolo (L x L)
   int therm_sweeps = 20000; // Passi per termalizzare il sistema
   int meas_sweeps = 30000; // Passi per misurare le osservabili
 
@@ -28,7 +28,6 @@ int main(int argc, char **argv) {
   cout << "***********************************************************" << endl;
   cout << endl;
   
-
   // Crea l'oggetto per gestire la simulazione
   for(int L : lattice_sizes){
     cout << endl;
@@ -37,7 +36,7 @@ int main(int argc, char **argv) {
     cout << "Termalizzazione: " << therm_sweeps << " passi" << endl;
     cout << "Misurazione: " << meas_sweeps << " passi" << endl;
     cout << "-----------------------------------------------------------" << endl;
-    auto start = std::chrono::high_resolution_clock::now();
+    auto start = chrono::high_resolution_clock::now();
     IsingSim sim(L, therm_sweeps, meas_sweeps, 1971); // seed = 42
 
     // Array per memorizzare i dati calcolati e poi passarli a ROOT
@@ -48,8 +47,7 @@ int main(int argc, char **argv) {
     vector<double> Chi_vals;
 
     // Definiamo i punti di temperatura.
-    // Usiamo passi più fitti vicino a T_c (circa 2.269) per cogliere la
-    // transizione di fase.
+    // Usiamo passi più fitti vicino a T_c (circa 2.269) per cogliere la transizione di fase
     vector<double> temperatures;
     for (double T = 1.0; T <= 4.0; T += 0.1) {
       if (T > 2.0 && T < 2.6) {
@@ -82,10 +80,10 @@ int main(int argc, char **argv) {
     }
 
     analyzer.addSimulation(L, T_vals, Chi_vals);
-    auto stop = std::chrono::high_resolution_clock::now();
+    auto stop = chrono::high_resolution_clock::now();
 
     double runtime =
-        std::chrono::duration<double>(stop - start).count();
+        chrono::duration<double>(stop - start).count();
 
     analyzer.addRuntime(L, runtime);
     cout << "\nRuntime simulazione: " << runtime << " s\n" << endl;
